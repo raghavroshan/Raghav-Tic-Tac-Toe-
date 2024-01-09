@@ -1,0 +1,73 @@
+import random
+
+def print_board(board):
+    print("+-------+-------+-------+")
+    for row in board:
+        print("|       |       |       |")
+        print(f"|   {row[0]}   |   {row[1]}   |   {row[2]}   |")
+        print("|       |       |       |")
+        print("+-------+-------+-------+")
+
+def is_winner(board, player):
+    # Check rows, columns, and diagonals for a win
+    for i in range(3):
+        if all(board[i][j] == player for j in range(3)) or all(board[j][i] == player for j in range(3)):
+            return True
+    if all(board[i][i] == player for i in range(3)) or all(board[i][2 - i] == player for i in range(3)):
+        return True
+    return False
+
+def is_board_full(board):
+    return all(board[i][j] in ['X', 'O'] for i in range(3) for j in range(3))
+
+def get_user_move():
+    while True:
+        try:
+            move = int(input("Enter your move (1-9): "))
+            if 1 <= move <= 9:
+                return move
+            else:
+                print("Invalid move. Please enter a number between 1 and 9.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+def make_computer_move(board):
+    while True:
+        move = random.randint(1, 9)
+        row, col = divmod(move - 1, 3)
+        if board[row][col] not in ['X', 'O']:
+            return move
+
+def play_tic_tac_toe():
+    board = [['1', '2', '3'], ['4', 'X', '6'], ['7', '8', '9']]
+    player = 'O'
+    
+    print_board(board)
+    
+    for _ in range(4):  # Max 4 moves each (computer and user)
+        if player == 'O':
+            move = get_user_move()
+        else:
+            move = make_computer_move(board)
+        
+        row, col = divmod(move - 1, 3)
+        
+        if board[row][col] in ['X', 'O']:
+            print("Invalid move. Try again.")
+            continue
+        
+        board[row][col] = player
+        print_board(board)
+        
+        if is_winner(board, player):
+            print(f"{player} won!")
+            return
+        
+        if is_board_full(board):
+            print("It's a tie!")
+            return
+        
+        player = 'X' if player == 'O' else 'O'
+
+if __name__ == "__main__":
+    play_tic_tac_toe()
